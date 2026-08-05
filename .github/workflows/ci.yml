@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  check-dist:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Rebuild dist/
+        run: npm run build:actions
+
+      - name: Compare expected and actual dist/
+        run: |
+          if [ "$(git status --porcelain dist)" != "" ]; then
+            echo "::error::Detected uncommitted changes after build. Run 'npm run build:actions' and commit the result."
+            git diff dist
+            exit 1
+          fi
+
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Only the credential-free validation tests run here; the remaining
+      # suites need a real GitHub App installation and are covered by the
+      # live test_*.yml workflows instead.
+      - name: Run unit tests
+        run: npm run test:unit
