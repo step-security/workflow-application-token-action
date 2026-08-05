@@ -1,0 +1,44 @@
+{
+  "name": "workflow-application-token-action",
+  "version": "5.1.0",
+  "description": "GitHub Action to generate a GitHub Application access token for use in GitHub Actions workflows",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "test": "vitest --run",
+    "test:unit": "vitest run -t \"creation with invalid\"",
+    "build": "tsc",
+    "build:action-main": "ncc build -m lib/actions/main.js -o dist/main -s",
+    "build:action-post": "ncc build -m lib/actions/post.js -o dist/post -s",
+    "build:actions": "npm run build && npm run build:action-main && npm run build:action-post"
+  },
+  "keywords": [
+    "github-actions",
+    "github",
+    "actions",
+    "github-application",
+    "token"
+  ],
+  "author": "step-security",
+  "license": "MIT",
+  "repository": {
+    "url": "git+https://github.com/step-security/workflow-application-token-action.git"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "dependencies": {
+    "@actions/core": "^3.0.1",
+    "@actions/github": "^9.1.1",
+    "axios": "^1.19.0",
+    "jsonwebtoken": "^9.0.2",
+    "undici": "^8.4.1"
+  },
+  "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/node": "^24.0.0",
+    "@vercel/ncc": "^0.44.0",
+    "typescript": "^5.5.3",
+    "vitest": "^4.1.8"
+  }
+}
